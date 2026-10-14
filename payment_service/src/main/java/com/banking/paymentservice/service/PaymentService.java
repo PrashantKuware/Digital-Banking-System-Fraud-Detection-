@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
@@ -14,8 +15,10 @@ import com.banking.paymentservice.dto.PaymentOrderResponse;
 import com.banking.paymentservice.entity.Payment;
 import com.banking.paymentservice.entity.PaymentStatus;
 import com.banking.paymentservice.repository.PaymentRepository;
+import com.razorpay.Order;
+import com.razorpay.RazorpayClient;
+import com.razorpay.RazorpayException;
 
-import jakarta.persistence.criteria.Order;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -61,7 +64,7 @@ public class PaymentService {
 		orderRequest.put("receipt",
 				"rcpt_" + System.currentTimeMillis() + UUID.randomUUID().toString().replace("-", "").substring(0, 10));
 
-		Order razorpayOrder = RazorpayClient.orders.create(orderRequest);
+		Order razorpayOrder = razorpayClient.orders.create(orderRequest);
 
 		log.info("Razorpay order created: {}", razorpayOrder.get("id").toString());
 
@@ -77,7 +80,7 @@ public class PaymentService {
 		Payment savedPayment = paymentRepository.save(payment);
 
 		return new PaymentOrderResponse(savedPayment.getId(), razorpayOrder.get("id").toString(), request.getAmount(),
-				"INR", "CREATED", keyId);
+				"INR", PaymentStatus.CREATED, keyId);
 	}
 	
 	public void handleWebhook(Map<String, Object> payload) {

@@ -3,7 +3,6 @@ package com.banking.paymentservice.controller;
 import java.util.Map;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -13,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.banking.paymentservice.dto.CreatePaymentRequest;
 import com.banking.paymentservice.dto.PaymentOrderResponse;
 import com.banking.paymentservice.service.PaymentService;
+import com.razorpay.RazorpayException;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
